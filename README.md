@@ -12,7 +12,7 @@
 Less Runtime :
 - minSdkVersion 15
 - gradle or maven
-- jar [Download just like this Path](https://github.com/MDL-Sinlov/MDL_Android_Updater/raw/master/mvn-repo/mdl/sinlov)
+- jar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov)
 
 > eclipse just use every repo at version `-x.x.x-jarLib.zip`
 
