@@ -34,4 +34,17 @@ public class MessageUtils {
         }
         return res;
     }
+
+    public static byte[] string2ByteArray(String string) {
+        return string.getBytes();
+    }
+
+    public static byte[] string2ByteArray(String string, String charsetName) {
+        try {
+            return string.getBytes(charsetName);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

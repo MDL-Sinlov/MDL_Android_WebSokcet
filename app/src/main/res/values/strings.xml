@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">WebSocket</string>
     <string name="hint_et_main_input_info">Input you  want send</string>
-    <string name="hint_tv_main_result">Result in here</string>
+    <string name="hint_tv_result">Result in here</string>
+    <string name="hint_et_just_input">Just Input message here</string>
+    <string name="title_activity_web_socket_send_string">WebSocketSendStringActivity</string>
+    <string name="btn_ws_send_string">Send String to WS</string>
+    <string name="tv_ws_send_string_resource">You Send String will show here</string>
+    <string name="hint_tv_ws_send_string_resource">Your Send Message is</string>
+    <string name="hint_tv_ws_send_string_res">Server Respon:</string>
+    <string name="hint_tv_server_info">End Of Inof</string>
+    <string name="hint_tv_result_end">end of Result</string>
 </resources>

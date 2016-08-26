@@ -128,10 +128,14 @@ import javax.net.ssl.TrustManager;
                         }
                         break;
                     case MSG_ON_MESSAGE_BYTE:
-
+                        if (null != msg.obj) {
+                            wr.mListener.onMessage((byte[]) msg.obj);
+                        }
                         break;
                     case MSG_ON_MESSAGE_STRING:
-
+                        if (null != msg.obj) {
+                            wr.mListener.onMessage((String) msg.obj);
+                        }
                         break;
                     default:
                         wr.mListener.onError(null);
@@ -151,18 +155,20 @@ import javax.net.ssl.TrustManager;
                 return "WebSocket EOF";
             case WebSocketListener.DISCONNECT_SSL_ERROR:
                 return " WebSocket SSL error!";
-
+            case WebSocketListener.GOT_CLOSE_OPT:
+                return "Got close op!";
         }
         return "UnKnow Error!";
     }
 
-    public WebSocketListener getListener() {
-        if (null != mListener) {
-            return mListener;
-        } else {
-            new RuntimeException("You are not setting WebSocketListener").printStackTrace();
-            return null;
-        }
+    public void msgError(int code, int arg1, int arg2, Object obj) {
+        mHandler.sendMessage(mHandler.obtainMessage(code,
+                arg1, arg2,
+                obj));
+    }
+
+    public void msgContent(int code, Object obj) {
+        mHandler.sendMessage(mHandler.obtainMessage(code, obj));
     }
 
     public void connect() {

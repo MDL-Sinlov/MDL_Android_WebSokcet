@@ -35,8 +35,10 @@ public abstract class MDLTestActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        bindView(savedInstanceState);
         bindListener();
     }
+    protected abstract void bindView(Bundle savedInstanceState);
 
     protected abstract void bindListener();
 

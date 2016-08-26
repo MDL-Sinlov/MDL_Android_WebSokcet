@@ -120,7 +120,8 @@ import java.util.List;
                     break;
             }
         }
-        client.getListener().onDisconnect(0, "EOF", null);
+        client.msgError(WebSocketClient.MSG_DISCONNECT, WebSocketListener.DISCONNECT_EOF,
+                WebSocketListener.DISCONNECT_EOF, null);
     }
 
     private void parseOpcode(byte data) throws ProtocolError {
@@ -184,7 +185,9 @@ import java.util.List;
     private byte[] frame(Object data, int opcode, int errorCode) {
         if (mClosed) return null;
 
-        Log.d(TAG, "Creating frame for: " + data + " op: " + opcode + " err: " + errorCode);
+        if (WebSocketEngine.DEBUG) {
+            Log.d(TAG, "Creating frame for: " + data + " op: " + opcode + " err: " + errorCode);
+        }
 
         byte[] buffer = (data instanceof String) ? decode((String) data) : (byte[]) data;
         int insert = (errorCode > 0) ? 2 : 0;
@@ -254,9 +257,9 @@ import java.util.List;
             if (mFinal) {
                 byte[] message = mBuffer.toByteArray();
                 if (mMode == MODE_TEXT) {
-                    client.getListener().onMessage(encode(message));
+                    client.msgContent(WebSocketClient.MSG_ON_MESSAGE_STRING, encode(message));
                 } else {
-                    client.getListener().onMessage(message);
+                    client.msgContent(WebSocketClient.MSG_ON_MESSAGE_BYTE, message);
                 }
                 reset();
             }
@@ -264,7 +267,7 @@ import java.util.List;
         } else if (opcode == OP_TEXT) {
             if (mFinal) {
                 String messageText = encode(payload);
-                client.getListener().onMessage(messageText);
+                client.msgContent(WebSocketClient.MSG_ON_MESSAGE_STRING, messageText);
             } else {
                 mMode = MODE_TEXT;
                 mBuffer.write(payload);
@@ -272,7 +275,7 @@ import java.util.List;
 
         } else if (opcode == OP_BINARY) {
             if (mFinal) {
-                client.getListener().onMessage(payload);
+                client.msgContent(WebSocketClient.MSG_ON_MESSAGE_BYTE, payload);
             } else {
                 mMode = MODE_BINARY;
                 mBuffer.write(payload);
@@ -281,20 +284,27 @@ import java.util.List;
         } else if (opcode == OP_CLOSE) {
             int code = (payload.length >= 2) ? 256 * payload[0] + payload[1] : 0;
             String reason = (payload.length > 2) ? encode(slice(payload, 2)) : null;
-            Log.d(TAG, "Got close op! " + code + " " + reason);
-            client.getListener().onDisconnect(code, reason, null);
+            if (WebSocketEngine.DEBUG) {
+                Log.d(TAG, "Got close op! " + code + " " + reason);
+            }
+            client.msgError(WebSocketClient.MSG_DISCONNECT, WebSocketListener.GOT_CLOSE_OPT,
+                    WebSocketListener.GOT_CLOSE_OPT, new Exception(reason));
 
         } else if (opcode == OP_PING) {
             if (payload.length > 125) {
                 throw new ProtocolError("Ping payload too large");
             }
-            Log.d(TAG, "Sending pong!!");
+            if (WebSocketEngine.DEBUG) {
+                Log.d(TAG, "Sending pong!!");
+            }
             client.sendFrame(frame(payload, OP_PONG, -1));
 
         } else if (opcode == OP_PONG) {
             String message = encode(payload);
             // FIXME: Fire callback...
-            Log.d(TAG, "Got pong! " + message);
+            if (WebSocketEngine.DEBUG) {
+                Log.d(TAG, "Got pong! " + message);
+            }
         }
     }
 
