@@ -20,6 +20,10 @@ package mdl.sinlov.android.websokcet;
  */
 public interface WebSocketListener {
     /**
+     * You coding error, please check code!
+     */
+    int ERROR = -1;
+    /**
      * WebSocket EOF
      */
     int DISCONNECT_EOF = 1 << 1;

@@ -53,6 +53,10 @@ public class MainActivity extends MDLTestActivity {
         int ws_server_host = ResourceUtil.getStringId(getApplicationContext(), "ws_server_host");
         wsHost = getString(ws_server_host);
         WebSocketEngine.getInstance().initClient("123", wsHost);
+    }
+
+    @Override
+    protected void bindListener() {
         WebSocketEngine.getInstance().onWebSocketListener(new WebSocketListener() {
             @Override
             public void onConnect() {
@@ -91,11 +95,6 @@ public class MainActivity extends MDLTestActivity {
                 tvMainResult.setText(ALogPrinter.getLogMessage());
             }
         });
-    }
-
-    @Override
-    protected void bindListener() {
-
     }
 
     @OnClick({R.id.btn_main_connect, R.id.btn_main_disconnect, R.id.btn_main_send_message, R.id.btn_main_send_byte})

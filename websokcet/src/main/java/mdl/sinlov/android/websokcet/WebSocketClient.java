@@ -347,11 +347,13 @@ import javax.net.ssl.TrustManager;
                 try {
                     synchronized (mSendLock) {
                         if (mSocket == null) {
-                            throw new IllegalStateException("Socket not connected");
+                            msgError(MSG_ERROR, WebSocketListener.ERROR, WebSocketListener.ERROR, new IllegalStateException("Socket not connected"));
+//                            throw new IllegalStateException("Socket not connected");
+                        } else {
+                            OutputStream outputStream = mSocket.getOutputStream();
+                            outputStream.write(frame);
+                            outputStream.flush();
                         }
-                        OutputStream outputStream = mSocket.getOutputStream();
-                        outputStream.write(frame);
-                        outputStream.flush();
                     }
                 } catch (IOException ex) {
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_ERROR, ex));
