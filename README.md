@@ -1,6 +1,6 @@
 [TOC]
 
-- just in develop do not use!
+- just in develop do not use library!
 
 # MDL Android WebSocket
 
@@ -25,8 +25,6 @@ Project Runtime:
 # Last Update Info
 
 - version 0.0.1
-
-
 
 # Dependency
 
@@ -55,6 +53,22 @@ dependencies {
 ## base use
 
 
+# Run Demo
+
+this Demo use
+
+- AndroidStudio 2.1.2
+- gradle version 2.10+
+- build tools version 23.0.3
+- 'com.android.support:appcompat-v7:23.4.0'
+
+input your websocket server info at [gradle.properties](gradle.properties)
+
+```conf
+ws_server_host=127.0.0.1:8080
+```
+
+than build this app `Demo module at app`
 
 #License
 
