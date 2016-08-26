@@ -55,20 +55,23 @@ dependencies {
 
 # Run Demo
 
-this Demo use
+Runtime info
 
 - AndroidStudio 2.1.2
 - gradle version 2.10+
 - build tools version 23.0.3
 - 'com.android.support:appcompat-v7:23.4.0'
 
+
+This Demo use gradle res build so
+
 input your websocket server info at [gradle.properties](gradle.properties)
 
 ```conf
-ws_server_host=127.0.0.1:8080
+ws_server_host=115.29.193.48:8088
 ```
 
-than build this app `Demo module at app`
+then build this app `Demo module at app`
 
 #License
 
