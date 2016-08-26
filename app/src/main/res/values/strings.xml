@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WebSocket</string>
+    <string name="hint_et_main_input_info">Input you  want send</string>
+    <string name="hint_tv_main_result">Result in here</string>
 </resources>

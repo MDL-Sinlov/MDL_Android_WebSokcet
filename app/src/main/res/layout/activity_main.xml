@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,8 +9,57 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="mdl.sinlov.android.websocket.app.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-</RelativeLayout>
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WebSocket Server Info: " />
+
+        <TextView
+            android:id="@+id/tv_server_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_vertical_margin"
+            android:background="@android:color/holo_blue_light" />
+
+        <TextView
+            android:id="@+id/tv_main_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_tv_main_result" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_vertical_margin"
+            android:background="@android:color/holo_blue_light" />
+
+        <Button
+            android:id="@+id/btn_main_connect"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="Connect Server" />
+
+        <Button
+            android:id="@+id/btn_main_disconnect"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="Disconnect Server" />
+
+        <Button
+            android:id="@+id/btn_main_send_message"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="Send String Message" />
+
+        <Button
+            android:id="@+id/btn_main_send_byte"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="Send byte" />
+
+    </LinearLayout>
+
+</ScrollView>
