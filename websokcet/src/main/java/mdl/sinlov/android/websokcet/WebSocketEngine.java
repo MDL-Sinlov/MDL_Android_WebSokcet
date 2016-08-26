@@ -27,7 +27,10 @@ import java.util.List;
  */
 public class WebSocketEngine {
 
+    public static boolean DEBUG = false;
+
     private static WebSocketEngine instance;
+    private final String ERROR_NOT_INIT_CLIENT = "You are not init WebSocket Client";
 
     private WebSocketClient client;
 
@@ -41,30 +44,61 @@ public class WebSocketEngine {
         return instance;
     }
 
+    public void onWebSocketListener(WebSocketListener listener) {
+        if (null != client) {
+            this.client.setmListener(listener);
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
+    }
 
-    public WebSocketClient getClient(WebSocketListener listener, String sessionId, String serverUrl) {
+    public WebSocketClient initClient(String sessionId, String serverUrl) {
+        List<BasicNameValuePair> extraHeaders = Collections.singletonList(
+                new BasicNameValuePair("Cookie", "session=" + sessionId));
+        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), extraHeaders);
+        this.client = client;
+        return client;
+    }
+
+    public WebSocketClient initClient(WebSocketListener listener, String sessionId, String serverUrl) {
 
         List<BasicNameValuePair> extraHeaders = Collections.singletonList(
                 new BasicNameValuePair("Cookie", "session=" + sessionId));
 
-        WebSocketClient client = new WebSocketClient(URI.create(serverUrl), listener, extraHeaders);
+        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), listener, extraHeaders);
         this.client = client;
         return client;
     }
 
     public void connect() {
-        client.connect();
+        if (null != client) {
+            client.connect();
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
     }
 
     public void disconnect() {
-        client.disconnect();
+        if (null != client) {
+            client.disconnect();
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
     }
 
     public void send(String content) {
-        client.send(content);
+        if (null != client) {
+            client.send(content);
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
     }
 
     public void send(byte[] data) {
-        client.send(data);
+        if (null != client) {
+            client.send(data);
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
     }
 }

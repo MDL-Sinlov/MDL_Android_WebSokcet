@@ -120,7 +120,7 @@ import java.util.List;
                     break;
             }
         }
-        client.getListener().onDisconnect(0, "EOF");
+        client.getListener().onDisconnect(0, "EOF", null);
     }
 
     private void parseOpcode(byte data) throws ProtocolError {
@@ -282,7 +282,7 @@ import java.util.List;
             int code = (payload.length >= 2) ? 256 * payload[0] + payload[1] : 0;
             String reason = (payload.length > 2) ? encode(slice(payload, 2)) : null;
             Log.d(TAG, "Got close op! " + code + " " + reason);
-            client.getListener().onDisconnect(code, reason);
+            client.getListener().onDisconnect(code, reason, null);
 
         } else if (opcode == OP_PING) {
             if (payload.length > 125) {

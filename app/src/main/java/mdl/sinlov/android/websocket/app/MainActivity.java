@@ -1,6 +1,7 @@
 package mdl.sinlov.android.websocket.app;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,8 +10,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mdl.sinlov.android.log.ALog;
+import mdl.sinlov.android.log.ALogPrinter;
 import mdl.sinlov.android.websocket.app.ui.MDLTestActivity;
 import mdl.sinlov.android.websocket.app.utils.ResourceUtil;
+import mdl.sinlov.android.websokcet.MessageUtils;
+import mdl.sinlov.android.websokcet.WebSocketEngine;
+import mdl.sinlov.android.websokcet.WebSocketListener;
 
 
 public class MainActivity extends MDLTestActivity {
@@ -42,6 +47,45 @@ public class MainActivity extends MDLTestActivity {
     private void initData() {
         int ws_server_host = ResourceUtil.getStringId(getApplicationContext(), "ws_server_host");
         wsHost = getString(ws_server_host);
+        WebSocketEngine.getInstance().initClient("123", wsHost);
+        WebSocketEngine.getInstance().onWebSocketListener(new WebSocketListener() {
+            @Override
+            public void onConnect() {
+                ALog.d("onConnect" + "server: " + wsHost + " is connect!");
+                tvMainResult.setText(ALogPrinter.getLogMessage());
+            }
+
+            @Override
+            public void onMessage(String message) {
+                ALog.i(message);
+                if (!TextUtils.isEmpty(message)) {
+                    String info = "Message String:\n" + message;
+                    tvMainResult.setText(info);
+                }
+            }
+
+            @Override
+            public void onMessage(byte[] data) {
+                String message = MessageUtils.byteArray2String(data);
+                ALog.i(message);
+                if (!TextUtils.isEmpty(message)) {
+                    String info = "Message byte[]:\n" + message;
+                    tvMainResult.setText(info);
+                }
+            }
+
+            @Override
+            public void onDisconnect(int code, String reason, Exception error) {
+                ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
+                tvMainResult.setText(ALogPrinter.getLogMessage());
+            }
+
+            @Override
+            public void onError(Exception error) {
+                ALog.w("onError: " + error.getMessage());
+                tvMainResult.setText(ALogPrinter.getLogMessage());
+            }
+        });
     }
 
     @Override
@@ -53,8 +97,10 @@ public class MainActivity extends MDLTestActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_main_connect:
+                WebSocketEngine.getInstance().connect();
                 break;
             case R.id.btn_main_disconnect:
+                WebSocketEngine.getInstance().disconnect();
                 break;
             case R.id.btn_main_send_message:
                 break;

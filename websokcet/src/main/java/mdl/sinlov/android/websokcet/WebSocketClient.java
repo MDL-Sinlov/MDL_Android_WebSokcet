@@ -2,6 +2,7 @@ package mdl.sinlov.android.websokcet;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -19,6 +20,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.net.URI;
 import java.security.KeyManagementException;
@@ -52,13 +54,17 @@ import javax.net.ssl.TrustManager;
  */
 /*package*/ class WebSocketClient {
     private static final String TAG = "WebSocketClient";
-
-    private URI mURI;
+    public static final int MSG_ERROR = -1;
+    public static final int MSG_CONNECT = 1;
+    public static final int MSG_DISCONNECT = MSG_CONNECT << 1;
+    public static final int MSG_ON_MESSAGE_BYTE = MSG_CONNECT << 2;
+    public static final int MSG_ON_MESSAGE_STRING = MSG_CONNECT << 3;
+    private final URI mURI;
     private WebSocketListener mListener;
     private Socket mSocket;
     private Thread mThread;
     private HandlerThread mHandlerThread;
-    private Handler mHandler;
+    private Handler mHandler = new SafeHandler(this);
     private List<BasicNameValuePair> mExtraHeaders;
     private HeartbeatParser mParser;
 
@@ -70,6 +76,18 @@ import javax.net.ssl.TrustManager;
         sTrustManagers = tm;
     }
 
+    public void setmListener(WebSocketListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public WebSocketClient(URI uri, List<BasicNameValuePair> extraHeaders) {
+        mURI = uri;
+        mExtraHeaders = extraHeaders;
+        mParser = new HeartbeatParser(this);
+        mHandlerThread = new HandlerThread("webSocket-thread");
+        mHandlerThread.start();
+    }
+
     public WebSocketClient(URI uri, WebSocketListener listener, List<BasicNameValuePair> extraHeaders) {
         mURI = uri;
         mListener = listener;
@@ -77,11 +95,74 @@ import javax.net.ssl.TrustManager;
         mParser = new HeartbeatParser(this);
         mHandlerThread = new HandlerThread("webSocket-thread");
         mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
+    }
+
+    private static class SafeHandler extends Handler {
+        private static WeakReference<WebSocketClient> wkWebSocketClient;
+
+        public SafeHandler(WebSocketClient webSocketClient) {
+            SafeHandler.wkWebSocketClient = new WeakReference<WebSocketClient>(webSocketClient);
+        }
+
+        public WeakReference<WebSocketClient> get() {
+            return wkWebSocketClient;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            WebSocketClient wr = wkWebSocketClient.get();
+            if (null != wr && null != wr.mListener) {
+                switch (msg.what) {
+                    case MSG_ERROR:
+                        if (null != msg.obj) {
+                            wr.mListener.onError((Exception) msg.obj);
+                        }
+                        break;
+                    case MSG_CONNECT:
+                        wr.mListener.onConnect();
+                        break;
+                    case MSG_DISCONNECT:
+                        if (null != msg.obj) {
+                            wr.mListener.onDisconnect(msg.arg1, wr.filterErrorByCode(msg.arg2), (Exception) msg.obj);
+                        }
+                        break;
+                    case MSG_ON_MESSAGE_BYTE:
+
+                        break;
+                    case MSG_ON_MESSAGE_STRING:
+
+                        break;
+                    default:
+                        wr.mListener.onError(null);
+                        break;
+                }
+            } else {
+                if (WebSocketEngine.DEBUG) {
+                    Log.w(TAG, "WeakReference is Null");
+                }
+            }
+        }
+    }
+
+    private String filterErrorByCode(int code) {
+        switch (code) {
+            case WebSocketListener.DISCONNECT_EOF:
+                return "WebSocket EOF";
+            case WebSocketListener.DISCONNECT_SSL_ERROR:
+                return " WebSocket SSL error!";
+
+        }
+        return "UnKnow Error!";
     }
 
     public WebSocketListener getListener() {
-        return mListener;
+        if (null != mListener) {
+            return mListener;
+        } else {
+            new RuntimeException("You are not setting WebSocketListener").printStackTrace();
+            return null;
+        }
     }
 
     public void connect() {
@@ -93,7 +174,6 @@ import javax.net.ssl.TrustManager;
             public void run() {
                 try {
                     String secret = createSecret();
-
                     int port = (mURI.getPort() != -1) ? mURI.getPort() : (mURI.getScheme().equals("wss") ? 443 : 80);
 
                     String path = TextUtils.isEmpty(mURI.getPath()) ? "/" : mURI.getPath();
@@ -137,6 +217,9 @@ import javax.net.ssl.TrustManager;
                         if (header.getName().equals("Sec-WebSocket-Accept")) {
                             String expected = createSecretValidation(secret);
                             String actual = header.getValue().trim();
+                            if (WebSocketEngine.DEBUG) {
+                                Log.d(TAG, "actual: " + actual + " |line: " + line);
+                            }
                             if (!expected.equals(actual)) {
                                 throw new HttpException("Bad Sec-WebSocket-Accept header value.");
                             }
@@ -148,22 +231,25 @@ import javax.net.ssl.TrustManager;
                         throw new HttpException("No Sec-WebSocket-Accept header.");
                     }
 
-                    mListener.onConnect();
-
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_CONNECT));
                     // Now decode websocket frames.
                     mParser.start(stream);
 
                 } catch (EOFException ex) {
-                    Log.d(TAG, "WebSocket EOF!", ex);
-                    mListener.onDisconnect(0, "EOF");
-
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_DISCONNECT,
+                            WebSocketListener.DISCONNECT_EOF, WebSocketListener.DISCONNECT_EOF,
+                            ex));
                 } catch (SSLException ex) {
                     // Connection reset by peer
-                    Log.d(TAG, "WebSocket SSL error!", ex);
-                    mListener.onDisconnect(0, "SSL");
-
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_DISCONNECT,
+                            WebSocketListener.DISCONNECT_SSL_ERROR,
+                            WebSocketListener.DISCONNECT_SSL_ERROR,
+                            ex));
                 } catch (Exception ex) {
-                    mListener.onError(ex);
+                    if (WebSocketEngine.DEBUG) {
+                        Log.d(TAG, "Problem", ex);
+                    }
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_ERROR, ex));
                 }
             }
         });
@@ -179,8 +265,7 @@ import javax.net.ssl.TrustManager;
                         mSocket.close();
                         mSocket = null;
                     } catch (IOException ex) {
-                        Log.d(TAG, "Error while disconnecting", ex);
-                        mListener.onError(ex);
+                        mHandler.sendMessage(mHandler.obtainMessage(MSG_ERROR, ex));
                     }
                 }
             });
@@ -205,6 +290,11 @@ import javax.net.ssl.TrustManager;
     private Header parseHeader(String line) {
         return BasicLineParser.parseHeader(line, new BasicLineParser());
     }
+
+    private void parseBody(String line) {
+        BasicLineParser.parseRequestLine(line, new BasicLineParser());
+    }
+
 
     // Can't use BufferedReader because it buffers past the HTTP data.
     private String readLine(HeartbeatParser.HappyDataInputStream reader) throws IOException {
@@ -257,8 +347,8 @@ import javax.net.ssl.TrustManager;
                         outputStream.write(frame);
                         outputStream.flush();
                     }
-                } catch (IOException e) {
-                    mListener.onError(e);
+                } catch (IOException ex) {
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_ERROR, ex));
                 }
             }
         });
