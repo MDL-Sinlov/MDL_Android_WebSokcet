@@ -53,19 +53,8 @@ public class WebSocketSendStringActivity extends MDLTestActivity {
     }
 
     @Override
-    protected void bindListener() {
-        btnWsSendString.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String trim = etWsSendString.getText().toString().trim();
-                if (TextUtils.isEmpty(trim)) {
-                    tvWsSendStringResource.setText("Your input is empty!");
-                } else {
-                    tvWsSendStringResource.setText(trim);
-                    wsEngine.send(trim);
-                }
-            }
-        });
+    protected void onResume() {
+        super.onResume();
         wsEngine.onWebSocketListener(new WebSocketListener() {
             @Override
             public void onConnect() {
@@ -102,6 +91,22 @@ public class WebSocketSendStringActivity extends MDLTestActivity {
             public void onError(Exception error) {
                 ALog.w("onError: " + error.getMessage());
                 tvWsSendStringRes.setText(ALogPrinter.getLogMessage());
+            }
+        });
+    }
+
+    @Override
+    protected void bindListener() {
+        btnWsSendString.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String trim = etWsSendString.getText().toString().trim();
+                if (TextUtils.isEmpty(trim)) {
+                    tvWsSendStringResource.setText("Your input is empty!");
+                } else {
+                    tvWsSendStringResource.setText(trim);
+                    wsEngine.send(trim);
+                }
             }
         });
     }

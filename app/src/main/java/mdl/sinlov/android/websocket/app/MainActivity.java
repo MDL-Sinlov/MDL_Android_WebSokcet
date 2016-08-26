@@ -56,7 +56,8 @@ public class MainActivity extends MDLTestActivity {
     }
 
     @Override
-    protected void bindListener() {
+    protected void onResume() {
+        super.onResume();
         WebSocketEngine.getInstance().onWebSocketListener(new WebSocketListener() {
             @Override
             public void onConnect() {
@@ -95,6 +96,11 @@ public class MainActivity extends MDLTestActivity {
                 tvMainResult.setText(ALogPrinter.getLogMessage());
             }
         });
+    }
+
+    @Override
+    protected void bindListener() {
+
     }
 
     @OnClick({R.id.btn_main_connect, R.id.btn_main_disconnect, R.id.btn_main_send_message, R.id.btn_main_send_byte})
