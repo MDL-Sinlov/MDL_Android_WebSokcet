@@ -10,4 +10,7 @@
     <string name="hint_tv_ws_send_string_res">Server Respon:</string>
     <string name="hint_tv_server_info">End Of Inof</string>
     <string name="hint_tv_result_end">end of Result</string>
+    <string name="hint_et_main_server_change">InputYourServerHere</string>
+    <string name="btn_main_change_server">Change Server</string>
+    <string name="hint_tv_result_start">Start Result</string>
 </resources>

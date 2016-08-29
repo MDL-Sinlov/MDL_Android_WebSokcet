@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -33,6 +34,10 @@ public class MainActivity extends MDLTestActivity {
     Button btnMainSendByte;
     @BindView(R.id.tv_server_info)
     TextView tvServerInfo;
+    @BindView(R.id.et_main_server_change)
+    EditText etMainServerChange;
+    @BindView(R.id.btn_main_change_server)
+    Button btnMainChangeServer;
     private String wsHost;
 
     @Override
@@ -58,44 +63,7 @@ public class MainActivity extends MDLTestActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        WebSocketEngine.getInstance().onWebSocketListener(new WebSocketListener() {
-            @Override
-            public void onConnect() {
-                ALog.d("onConnect" + "server: " + wsHost + " is connect!");
-                tvMainResult.setText(ALogPrinter.getLogMessage());
-            }
-
-            @Override
-            public void onMessage(String message) {
-                ALog.i(message);
-                if (!TextUtils.isEmpty(message)) {
-                    String info = "Message String:\n" + message;
-                    tvMainResult.setText(info);
-                }
-            }
-
-            @Override
-            public void onMessage(byte[] data) {
-                String message = MessageUtils.byteArray2String(data);
-                ALog.i(message);
-                if (!TextUtils.isEmpty(message)) {
-                    String info = "Message byte[]:\n" + message;
-                    tvMainResult.setText(info);
-                }
-            }
-
-            @Override
-            public void onDisconnect(int code, String reason, Exception error) {
-                ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
-                tvMainResult.setText(ALogPrinter.getLogMessage());
-            }
-
-            @Override
-            public void onError(Exception error) {
-                ALog.w("onError: " + error.getMessage());
-                tvMainResult.setText(ALogPrinter.getLogMessage());
-            }
-        });
+        WebSocketEngine.getInstance().onWebSocketListener(new MyWebSocketListener());
     }
 
     @Override
@@ -103,9 +71,13 @@ public class MainActivity extends MDLTestActivity {
 
     }
 
-    @OnClick({R.id.btn_main_connect, R.id.btn_main_disconnect, R.id.btn_main_send_message, R.id.btn_main_send_byte})
+    @OnClick({R.id.btn_main_connect, R.id.btn_main_disconnect, R.id.btn_main_send_message,
+            R.id.btn_main_send_byte, R.id.btn_main_change_server})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_main_change_server:
+                checkChangeServer();
+                break;
             case R.id.btn_main_connect:
                 WebSocketEngine.getInstance().connect();
                 break;
@@ -117,6 +89,56 @@ public class MainActivity extends MDLTestActivity {
                 break;
             case R.id.btn_main_send_byte:
                 break;
+        }
+    }
+
+    private void checkChangeServer() {
+        String etInput = etMainServerChange.getText().toString().trim();
+        if (TextUtils.isEmpty(etInput)) {
+            showToast("Please Input You server Like IP:Port");
+        } else {
+            wsHost = etInput;
+            tvServerInfo.setText(wsHost);
+            WebSocketEngine.getInstance().changeClient("12345", wsHost, new MyWebSocketListener());
+        }
+    }
+
+    private class MyWebSocketListener implements WebSocketListener {
+        @Override
+        public void onConnect() {
+            ALog.d("onConnect" + "server: " + wsHost + " is connect!");
+            tvMainResult.setText(ALogPrinter.getLogMessage());
+        }
+
+        @Override
+        public void onMessage(String message) {
+            ALog.i(message);
+            if (!TextUtils.isEmpty(message)) {
+                String info = "Message String:\n" + message;
+                tvMainResult.setText(info);
+            }
+        }
+
+        @Override
+        public void onMessage(byte[] data) {
+            String message = MessageUtils.byteArray2String(data);
+            ALog.i(message);
+            if (!TextUtils.isEmpty(message)) {
+                String info = "Message byte[]:\n" + message;
+                tvMainResult.setText(info);
+            }
+        }
+
+        @Override
+        public void onDisconnect(int code, String reason, Exception error) {
+            ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
+            tvMainResult.setText(ALogPrinter.getLogMessage());
+        }
+
+        @Override
+        public void onError(Exception error) {
+            ALog.w("onError: " + error.getMessage());
+            tvMainResult.setText(ALogPrinter.getLogMessage());
         }
     }
 }

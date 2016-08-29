@@ -60,11 +60,21 @@ public class WebSocketEngine {
         return client;
     }
 
-    public WebSocketClient initClient(WebSocketListener listener, String sessionId, String serverUrl) {
+    public WebSocketClient initClient(String sessionId, String serverUrl, WebSocketListener listener) {
 
         List<BasicNameValuePair> extraHeaders = Collections.singletonList(
                 new BasicNameValuePair("Cookie", "session=" + sessionId));
 
+        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), listener, extraHeaders);
+        this.client = client;
+        return client;
+    }
+
+    public WebSocketClient changeClient(String sessionId, String serverUrl, WebSocketListener listener) {
+        List<BasicNameValuePair> extraHeaders = Collections.singletonList(
+                new BasicNameValuePair("Cookie", "session=" + sessionId));
+
+        this.client = null;
         WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), listener, extraHeaders);
         this.client = client;
         return client;

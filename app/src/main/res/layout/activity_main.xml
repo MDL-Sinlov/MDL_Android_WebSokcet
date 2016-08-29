@@ -31,6 +31,26 @@
             android:gravity="end"
             android:text="@string/hint_tv_server_info" />
 
+        <EditText
+            android:id="@+id/et_main_server_change"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_et_main_server_change"
+            android:maxLines="1" />
+
+        <Button
+            android:id="@+id/btn_main_change_server"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="@string/btn_main_change_server" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_light"
+            android:gravity="start"
+            android:text="@string/hint_tv_result_start" />
+
+
         <TextView
             android:id="@+id/tv_main_result"
             android:layout_width="match_parent"
