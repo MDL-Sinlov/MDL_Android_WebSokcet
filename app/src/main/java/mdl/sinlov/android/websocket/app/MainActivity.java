@@ -100,6 +100,7 @@ public class MainActivity extends MDLTestActivity {
             wsHost = etInput;
             tvServerInfo.setText(wsHost);
             WebSocketEngine.getInstance().changeClient("12345", wsHost, new MyWebSocketListener());
+            showToast("Change Server Success: " + wsHost);
         }
     }
 
