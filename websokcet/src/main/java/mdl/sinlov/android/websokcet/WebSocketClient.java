@@ -187,7 +187,7 @@ import javax.net.ssl.TrustManager;
                         path += "?" + mURI.getQuery();
                     }
                     String originScheme = mURI.getScheme().equals("wss") ? "https" : "http";
-                    URI origin = new URI(originScheme, "//" + mURI.getHost(), null);
+                    URI origin = new URI(originScheme, "//" + mURI.getHost(), mURI.getPath(), null);
                     SocketFactory factory = mURI.getScheme().equals("wss") ? getSSLSocketFactory() : SocketFactory.getDefault();
                     mSocket = factory.createSocket(mURI.getHost(), port);
                     PrintWriter out = new PrintWriter(mSocket.getOutputStream());
