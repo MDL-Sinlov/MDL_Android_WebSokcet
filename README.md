@@ -17,7 +17,7 @@ Less Runtime :
 > eclipse just use every repo at version `-x.x.x-jarLib.zip`
 
 Project Runtime:
-- Android Studio 2.1.2
+- Android Studio 2.1.3
 - appcompat-v7:24.1.1
 - Gradle 2.10
 - com.android.tools.build:gradle:2.1.2
