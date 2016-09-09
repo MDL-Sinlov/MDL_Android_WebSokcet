@@ -5,7 +5,7 @@
 - this library is for Android WebSocket client
 - use single instance in reducing memory usage
 
-__> version 0.0.1 method count__ 
+~~> version 0.0.1 method count~~
 
 Less Runtime :
 - minSdkVersion 15
