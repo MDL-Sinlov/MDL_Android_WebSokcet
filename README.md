@@ -24,7 +24,7 @@ at root project `build.gradle`
 ```gradle
 repositories {
     maven {
-        url 'https://raw.githubusercontent.com/MDL-Sinlov/MDL_Android_WebSocket/master/mvn-repo/'
+        url 'https://raw.githubusercontent.com/MDL-Sinlov/MDL-Android-Repo/master/mvn-repo/'
     }
     jcenter()
     ...
