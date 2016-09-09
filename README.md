@@ -1,26 +1,17 @@
 [TOC]
 
-- just in develop do not use library!
-
 # MDL Android WebSocket
 
 - this library is for Android WebSocket client
 - use single instance in reducing memory usage
 
-> version 0.0.1 method count 
+__> version 0.0.1 method count__ 
 
 Less Runtime :
 - minSdkVersion 15
 - gradle or maven
-- jar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov)
+- aar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov/android/websocket/0.0.1/websocket-0.0.1.aar)
 
-> eclipse just use every repo at version `-x.x.x-jarLib.zip`
-
-Project Runtime:
-- Android Studio 2.1.3
-- appcompat-v7:24.1.1
-- Gradle 2.10
-- com.android.tools.build:gradle:2.1.2
 
 # Last Update Info
 
@@ -57,11 +48,12 @@ dependencies {
 
 Runtime info
 
-- AndroidStudio 2.1.2
-- gradle version 2.10+
-- build tools version 23.0.3
-- 'com.android.support:appcompat-v7:23.4.0'
 
+Project Runtime:
+- Android Studio 2.1.3
+- appcompat-v7:23.4.0
+- Gradle 2.10
+- com.android.tools.build:gradle:2.1.3
 
 This Demo use gradle res build so
 
