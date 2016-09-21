@@ -32,6 +32,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mdl.sinlov.android.websocket.app.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.WebSocketSendBinaryActivity"
+            android:label="@string/title_activity_web_socket_send_binary"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mdl.sinlov.android.websocket.app.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

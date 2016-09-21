@@ -13,4 +13,9 @@
     <string name="hint_et_main_server_change">InputYourServerHere</string>
     <string name="btn_main_change_server">Change Server</string>
     <string name="hint_tv_result_start">Start Result</string>
+    <string name="title_activity_web_socket_send_binary">WebSocketSendBinaryActivity</string>
+    <string name="btn_ws_send_binary">Send binary to WS</string>
+    <string name="hint_tv_ws_send_binary_resource">You send Binary is print to hex</string>
+    <string name="tv_ws_send_binary_resource">Hex string will show here</string>
+    <string name="hint_tv_ws_send_binary_res">Server Binary Respon</string>
 </resources>

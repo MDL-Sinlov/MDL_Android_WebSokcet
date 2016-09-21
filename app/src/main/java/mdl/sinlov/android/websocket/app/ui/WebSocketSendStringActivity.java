@@ -13,8 +13,8 @@ import butterknife.ButterKnife;
 import mdl.sinlov.android.log.ALog;
 import mdl.sinlov.android.log.ALogPrinter;
 import mdl.sinlov.android.websocket.app.R;
+import mdl.sinlov.android.websocket.app.utils.HexUtils;
 import mdl.sinlov.android.websocket.app.utils.ResourceUtil;
-import mdl.sinlov.android.websokcet.MessageUtils;
 import mdl.sinlov.android.websokcet.WebSocketEngine;
 import mdl.sinlov.android.websokcet.WebSocketListener;
 
@@ -73,7 +73,10 @@ public class WebSocketSendStringActivity extends MDLTestActivity {
 
             @Override
             public void onMessage(byte[] data) {
-                String message = MessageUtils.byteArray2String(data);
+                String message = HexUtils.bytes2HexStr(data);
+                if (message.length() > 20) {
+                    message = message.substring(0, 19);
+                }
                 ALog.i(message);
                 if (!TextUtils.isEmpty(message)) {
                     String info = "Message byte[]:\n" + message;

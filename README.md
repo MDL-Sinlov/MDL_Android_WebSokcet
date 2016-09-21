@@ -148,7 +148,8 @@ then build this app `Demo module at app`
 
 ## Demo TODO
 
-- send byte[] demo
+- cookie set
+- message type set
 
 #License
 

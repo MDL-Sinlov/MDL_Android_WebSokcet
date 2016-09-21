@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import mdl.sinlov.android.log.ALog;
 import mdl.sinlov.android.log.ALogPrinter;
 import mdl.sinlov.android.websocket.app.ui.MDLTestActivity;
+import mdl.sinlov.android.websocket.app.ui.WebSocketSendBinaryActivity;
 import mdl.sinlov.android.websocket.app.ui.WebSocketSendStringActivity;
 import mdl.sinlov.android.websocket.app.utils.ResourceUtil;
 import mdl.sinlov.android.websokcet.MessageUtils;
@@ -95,6 +96,7 @@ public class MainActivity extends MDLTestActivity {
                 skip2Activity(WebSocketSendStringActivity.class);
                 break;
             case R.id.btn_main_send_byte:
+                skip2Activity(WebSocketSendBinaryActivity.class);
                 break;
         }
     }
