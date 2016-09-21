@@ -13,7 +13,7 @@
 Less Runtime :
 - minSdkVersion 15
 - gradle or maven
-- aar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov/android/websocket/0.0.1/websocket-0.0.1.aar)
+- aar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov/android/websocket/0.0.2/websocket-0.0.2.aar)
 
 
 # Last Update Info
