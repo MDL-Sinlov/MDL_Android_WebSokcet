@@ -4,6 +4,9 @@
 
 - this library is for Android WebSocket client
 - use single instance in reducing memory usage
+- callback use safe Handler
+- thread safe
+- use `org.apache.http.legacy`
 
 ~~> version 0.0.1 method count~~
 
