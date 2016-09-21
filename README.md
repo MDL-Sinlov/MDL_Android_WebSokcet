@@ -52,7 +52,7 @@ test server use http://www.blue-zero.com/WebSocket/
 - init WebSocketClient before use
 
 ```java
-String sessionId = "1234567890"
+String sessionId = "1234567890";
 String wsHost = "ws://127.0.0.1:18080";
 WebSocketEngine.getInstance().initClient(sessionId, wsHost);
 ```
@@ -89,6 +89,8 @@ WebSocketEngine.getInstance().initClient(sessionId, wsHost);
     }
 ```
 
+`ALog` just use https://github.com/MDL-Sinlov/MDL_Android_Log
+
 - in LifeCycle
 
 ```java
@@ -112,6 +114,14 @@ WebSocketEngine.getInstance().initClient(sessionId, wsHost);
 
 ```java
     WebSocketEngine.getInstance().send();
+```
+
+
+- MessageUtils
+
+```java
+    MessageUtils.byteArray2String();
+    MessageUtils.string2ByteArray();
 ```
 
 
