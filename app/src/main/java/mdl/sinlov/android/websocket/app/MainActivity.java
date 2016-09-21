@@ -67,6 +67,13 @@ public class MainActivity extends MDLTestActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // this not necessary
+        WebSocketEngine.getInstance().disconnect();
+    }
+
+    @Override
     protected void bindListener() {
 
     }

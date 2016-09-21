@@ -15,7 +15,8 @@ Less Runtime :
 
 # Last Update Info
 
-- version 0.0.1
+- version 0.0.2
+    change wsHost set, must use full URL
 
 # Dependency
 
@@ -35,13 +36,80 @@ in module `build.gradle`
 
 ```gradle
 dependencies {
-    compile 'mdl.sinlov.android:websocket:0.0.1'
+    compile 'mdl.sinlov.android:websocket:0.0.2'
 }
 ```
 
 # Usage
 
 ## base use
+
+test server use http://www.blue-zero.com/WebSocket/
+
+- init WebSocketClient before use
+
+```java
+String sessionId = "1234567890"
+String wsHost = "ws://127.0.0.1:18080";
+WebSocketEngine.getInstance().initClient(sessionId, wsHost);
+```
+
+- create WebSocketListener
+
+```java
+    private class MyWebSocketListener implements WebSocketListener {
+        @Override
+        public void onConnect() {
+            ALog.d("onConnect" + "server: " + wsHost + " is connect!");
+        }
+
+        @Override
+        public void onMessage(String message) {
+            ALog.i(message);
+        }
+
+        @Override
+        public void onMessage(byte[] data) {
+            String message = MessageUtils.byteArray2String(data);
+            ALog.i(message);
+        }
+
+        @Override
+        public void onDisconnect(int code, String reason, Exception error) {
+            ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
+        }
+
+        @Override
+        public void onError(Exception error) {
+            ALog.w("onError: " + error.getMessage());
+        }
+    }
+```
+
+- in LifeCycle
+
+```java
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WebSocketEngine.getInstance().onWebSocketListener(new MyWebSocketListener());
+        WebSocketEngine.getInstance().connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // this not necessary
+        WebSocketEngine.getInstance().disconnect();
+    }
+
+```
+
+- send support String or byte[]
+
+```java
+    WebSocketEngine.getInstance().send();
+```
 
 
 # Run Demo
@@ -60,10 +128,14 @@ This Demo use gradle res build so
 input your websocket server info at [gradle.properties](gradle.properties)
 
 ```conf
-ws_server_host=115.29.193.48:8088
+ws_server_host=ws://115.29.193.48:8088
 ```
 
 then build this app `Demo module at app`
+
+## Demo TODO
+
+- send byte[] demo
 
 #License
 

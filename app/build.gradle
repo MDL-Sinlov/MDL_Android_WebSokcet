@@ -18,11 +18,11 @@ android {
             resValue "string", "ws_server_host", ws_server_host
             is_ws_server_host = false
         } else {
-            resValue "string", "ws_server_host", "127.0.0.1:18080"
+            resValue "string", "ws_server_host", "ws://127.0.0.1:18080"
         }
 
         if (is_ws_server_host) {
-            logger.warn("WARNING [*] You are not set ws_server_host in gradle.properties default is 127.0.0.1:18080")
+            logger.warn("WARNING [*] You are not set ws_server_host in gradle.properties default is ws://127.0.0.1:18080")
         }
     }
 

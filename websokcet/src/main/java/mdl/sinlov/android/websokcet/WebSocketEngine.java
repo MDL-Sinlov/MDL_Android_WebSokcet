@@ -55,7 +55,7 @@ public class WebSocketEngine {
     public WebSocketClient initClient(String sessionId, String serverUrl) {
         List<BasicNameValuePair> extraHeaders = Collections.singletonList(
                 new BasicNameValuePair("Cookie", "session=" + sessionId));
-        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), extraHeaders);
+        WebSocketClient client = new WebSocketClient(URI.create(serverUrl), extraHeaders);
         this.client = client;
         return client;
     }
@@ -65,7 +65,7 @@ public class WebSocketEngine {
         List<BasicNameValuePair> extraHeaders = Collections.singletonList(
                 new BasicNameValuePair("Cookie", "session=" + sessionId));
 
-        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), listener, extraHeaders);
+        WebSocketClient client = new WebSocketClient(URI.create(serverUrl), listener, extraHeaders);
         this.client = client;
         return client;
     }
@@ -75,7 +75,7 @@ public class WebSocketEngine {
                 new BasicNameValuePair("Cookie", "session=" + sessionId));
 
         this.client = null;
-        WebSocketClient client = new WebSocketClient(URI.create("ws://" + serverUrl), listener, extraHeaders);
+        WebSocketClient client = new WebSocketClient(URI.create(serverUrl), listener, extraHeaders);
         this.client = client;
         return client;
     }
