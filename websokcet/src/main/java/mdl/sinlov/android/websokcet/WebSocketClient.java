@@ -54,11 +54,20 @@ import javax.net.ssl.TrustManager;
  */
 /*package*/ class WebSocketClient {
     private static final String TAG = "WebSocketClient";
+    public static final String DEFAULT_WEBSOCKET_VERSION = "13";
+    /**
+     * see https://tools.ietf.org/html/rfc6455
+     */
+    private static final String MAGIC_GUID_SECRET = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     public static final int MSG_ERROR = -1;
     public static final int MSG_CONNECT = 1;
     public static final int MSG_DISCONNECT = MSG_CONNECT << 1;
     public static final int MSG_ON_MESSAGE_BYTE = MSG_CONNECT << 2;
     public static final int MSG_ON_MESSAGE_STRING = MSG_CONNECT << 3;
+    public static final int MSG_ON_PING = MSG_CONNECT << 4;
+    public static final int MSG_ON_PING_ERROR = MSG_ON_PING + 1;
+    public static final int MSG_ON_PONG = MSG_CONNECT << 5;
+    public static final int MSG_ON_PONG_ERROR = MSG_ON_PONG + 1;
     private final URI mURI;
     private WebSocketListener mListener;
     private Socket mSocket;
@@ -67,6 +76,7 @@ import javax.net.ssl.TrustManager;
     private Handler mHandler = new SafeHandler(this);
     private List<BasicNameValuePair> mExtraHeaders;
     private HeartbeatParser mParser;
+    private String webSocketVersion = DEFAULT_WEBSOCKET_VERSION;
 
     private final Object mSendLock = new Object();
 
@@ -78,6 +88,10 @@ import javax.net.ssl.TrustManager;
 
     public void setmListener(WebSocketListener mListener) {
         this.mListener = mListener;
+    }
+
+    public void setWebSocketVersion(String webSocketVersion) {
+        this.webSocketVersion = webSocketVersion;
     }
 
     public WebSocketClient(URI uri, List<BasicNameValuePair> extraHeaders) {
@@ -124,7 +138,7 @@ import javax.net.ssl.TrustManager;
                         break;
                     case MSG_DISCONNECT:
                         if (null != msg.obj) {
-                            wr.mListener.onDisconnect(msg.arg1, wr.filterErrorByCode(msg.arg2), (Exception) msg.obj);
+                            wr.mListener.onDisconnect(msg.arg1, wr.filterErrorByCode(msg.arg2), (ProtocolError) msg.obj);
                         }
                         break;
                     case MSG_ON_MESSAGE_BYTE:
@@ -135,6 +149,26 @@ import javax.net.ssl.TrustManager;
                     case MSG_ON_MESSAGE_STRING:
                         if (null != msg.obj) {
                             wr.mListener.onMessage((String) msg.obj);
+                        }
+                        break;
+                    case MSG_ON_PING:
+                        if (null != msg.obj) {
+                            wr.mListener.onHeartbeat((String) msg.obj, "", null);
+                        }
+                        break;
+                    case MSG_ON_PONG:
+                        if (null != msg.obj) {
+                            wr.mListener.onHeartbeat("", (String) msg.obj, null);
+                        }
+                        break;
+                    case MSG_ON_PING_ERROR:
+                        if (null != msg.obj) {
+                            wr.mListener.onHeartbeat("", "", (ProtocolError) msg.obj);
+                        }
+                        break;
+                    case MSG_ON_PONG_ERROR:
+                        if (null != msg.obj) {
+                            wr.mListener.onHeartbeat("", "", (ProtocolError) msg.obj);
                         }
                         break;
                     default:
@@ -197,7 +231,7 @@ import javax.net.ssl.TrustManager;
                     out.print("Host: " + mURI.getHost() + "\r\n");
                     out.print("Origin: " + origin.toString() + "\r\n");
                     out.print("Sec-WebSocket-Key: " + secret + "\r\n");
-                    out.print("Sec-WebSocket-Version: 13\r\n");
+                    out.print("Sec-WebSocket-Version: " + webSocketVersion + "\r\n");
                     if (mExtraHeaders != null) {
                         for (NameValuePair pair : mExtraHeaders) {
                             out.print(String.format("%s: %s\r\n", pair.getName(), pair.getValue()));
@@ -286,6 +320,10 @@ import javax.net.ssl.TrustManager;
         sendFrame(mParser.frame(data));
     }
 
+    public void ping(String message) {
+        mParser.ping(message);
+    }
+
     private StatusLine parseStatusLine(String line) {
         if (TextUtils.isEmpty(line)) {
             return null;
@@ -333,7 +371,7 @@ import javax.net.ssl.TrustManager;
     private String createSecretValidation(String secret) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            md.update((secret + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").getBytes());
+            md.update((secret + MAGIC_GUID_SECRET).getBytes());
             return Base64.encodeToString(md.digest(), Base64.DEFAULT).trim();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

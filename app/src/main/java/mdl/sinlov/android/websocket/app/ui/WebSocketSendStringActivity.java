@@ -85,6 +85,11 @@ public class WebSocketSendStringActivity extends MDLTestActivity {
             }
 
             @Override
+            public boolean onHeartbeat(String ping, String pong, Exception error) {
+                return false;
+            }
+
+            @Override
             public void onDisconnect(int code, String reason, Exception error) {
                 ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
                 tvWsSendStringRes.setText(ALogPrinter.getLogMessage());

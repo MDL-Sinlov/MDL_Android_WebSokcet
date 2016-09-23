@@ -1,6 +1,8 @@
 package mdl.sinlov.android.websokcet;
 
 
+import android.text.TextUtils;
+
 import org.apache.http.message.BasicNameValuePair;
 
 import java.net.URI;
@@ -109,6 +111,31 @@ public class WebSocketEngine {
             client.send(data);
         } else {
             new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
+    }
+
+    /**
+     * just in beta
+     *
+     * @param message ping message
+     */
+    public void ping(String message) {
+        if (null != client) {
+            client.ping(message);
+        } else {
+            new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+        }
+    }
+
+    public void setVersion(String version) {
+        if (TextUtils.isEmpty(version)) {
+            new RuntimeException("your version is bad at " + version).printStackTrace();
+        } else {
+            if (null != client) {
+                client.setWebSocketVersion(version);
+            } else {
+                new RuntimeException(ERROR_NOT_INIT_CLIENT).printStackTrace();
+            }
         }
     }
 }

@@ -8,18 +8,24 @@
 - thread safe
 - use `org.apache.http.legacy`
 
-~~> version 0.0.1 method count~~
+~~> version 0.0.2 method count~~
 
 Less Runtime :
 - minSdkVersion 15
 - gradle or maven
-- aar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov/android/websocket/0.0.2/websocket-0.0.2.aar)
-
 
 # Last Update Info
 
+- Use Release https://github.com/MDL-Sinlov/MDL_Android_WebSokcet/releases
+- aar [Download just like this Path](https://github.com/MDL-Sinlov/MDL-Android-Repo/raw/master/mvn-repo/mdl/sinlov/android/websocket/0.0.2/websocket-0.0.2.aar)
 - version 0.0.2
     change wsHost set, must use full URL
+
+# TODO
+
+- cookie set more head
+- ping pong send
+- auto relink service
 
 # Dependency
 
@@ -43,7 +49,19 @@ dependencies {
 }
 ```
 
+
 # Usage
+
+- version websocket:0.0.2
+
+## Params
+
+Link in cookies
+
+|Key|Desc|
+|---|---|
+|session|this client session id|
+
 
 ## base use
 
@@ -145,11 +163,6 @@ ws_server_host=ws://115.29.193.48:8088
 ```
 
 then build this app `Demo module at app`
-
-## Demo TODO
-
-- cookie set
-- message type set
 
 #License
 

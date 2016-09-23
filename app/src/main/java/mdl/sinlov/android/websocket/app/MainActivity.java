@@ -39,6 +39,8 @@ public class MainActivity extends MDLTestActivity {
     EditText etMainServerChange;
     @BindView(R.id.btn_main_change_server)
     Button btnMainChangeServer;
+    @BindView(R.id.btn_main_send_ping)
+    Button btnMainSendPing;
     private String wsHost;
 
     @Override
@@ -80,7 +82,7 @@ public class MainActivity extends MDLTestActivity {
     }
 
     @OnClick({R.id.btn_main_connect, R.id.btn_main_disconnect, R.id.btn_main_send_message,
-            R.id.btn_main_send_byte, R.id.btn_main_change_server})
+            R.id.btn_main_send_byte, R.id.btn_main_change_server, R.id.btn_main_send_ping})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_main_change_server:
@@ -91,6 +93,9 @@ public class MainActivity extends MDLTestActivity {
                 break;
             case R.id.btn_main_disconnect:
                 WebSocketEngine.getInstance().disconnect();
+                break;
+            case R.id.btn_main_send_ping:
+                WebSocketEngine.getInstance().ping(String.valueOf(System.currentTimeMillis()));
                 break;
             case R.id.btn_main_send_message:
                 skip2Activity(WebSocketSendStringActivity.class);
@@ -138,6 +143,16 @@ public class MainActivity extends MDLTestActivity {
                 tvMainResult.setText(info);
             }
         }
+
+        @Override
+        public boolean onHeartbeat(String ping, String pong, Exception error) {
+            ALog.d("message ping: " + ping + "\n" +
+                    "message pong: " + pong + "\n"
+            );
+            tvMainResult.setText(ALogPrinter.getLogMessage());
+            return false;
+        }
+
 
         @Override
         public void onDisconnect(int code, String reason, Exception error) {

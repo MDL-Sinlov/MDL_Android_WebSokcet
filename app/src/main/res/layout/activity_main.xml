@@ -78,6 +78,11 @@
             android:text="Disconnect Server" />
 
         <Button
+            android:id="@+id/btn_main_send_ping"
+            style="@style/Sinlov.Button.Menu.MW"
+            android:text="Send String Ping" />
+
+        <Button
             android:id="@+id/btn_main_send_message"
             style="@style/Sinlov.Button.Menu.MW"
             android:text="Send String Message" />

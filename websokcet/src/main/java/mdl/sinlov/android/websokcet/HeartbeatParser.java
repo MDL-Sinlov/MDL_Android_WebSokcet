@@ -1,5 +1,6 @@
 package mdl.sinlov.android.websokcet;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -291,19 +292,30 @@ import java.util.List;
                     WebSocketListener.GOT_CLOSE_OPT, new Exception(reason));
 
         } else if (opcode == OP_PING) {
-            if (payload.length > 125) {
-                throw new ProtocolError("Ping payload too large");
+            if (payload.length > ProtocolError.MAX_PING_MESSAGE_SIZE) {
+                client.msgError(WebSocketClient.MSG_ON_PING_ERROR, WebSocketListener.PING_MESSAGE_IS_TOO_LANG,
+                        WebSocketListener.PING_MESSAGE_IS_TOO_LANG,
+                        new ProtocolError("Ping payload too large, max size is " + ProtocolError.MAX_PING_MESSAGE_SIZE)
+                );
+            } else {
+                if (WebSocketEngine.DEBUG) {
+                    Log.d(TAG, "Sending ping!!");
+                }
+                client.sendFrame(frame(payload, OP_PONG, -1));
+                client.msgContent(WebSocketClient.MSG_ON_PING, encode(payload));
             }
-            if (WebSocketEngine.DEBUG) {
-                Log.d(TAG, "Sending pong!!");
-            }
-            client.sendFrame(frame(payload, OP_PONG, -1));
 
         } else if (opcode == OP_PONG) {
             String message = encode(payload);
-            // FIXME: Fire callback...
+            // FIXME: Fire callback... out of time
             if (WebSocketEngine.DEBUG) {
                 Log.d(TAG, "Got pong! " + message);
+            }
+            if (!TextUtils.isEmpty(message)) {
+                client.msgContent(WebSocketClient.MSG_ON_PONG, message);
+            } else {
+                client.msgError(WebSocketClient.MSG_ON_PONG_ERROR, WebSocketListener.PONG_MESSAGE_IS_EMPTY,
+                        WebSocketListener.PONG_MESSAGE_IS_EMPTY, new ProtocolError("pong message is empty"));
             }
         }
     }
@@ -339,12 +351,6 @@ import java.util.List;
 
     private byte[] slice(byte[] array, int start) {
         return Arrays.copyOfRange(array, start, array.length);
-    }
-
-    public static class ProtocolError extends IOException {
-        public ProtocolError(String detailMessage) {
-            super(detailMessage);
-        }
     }
 
     private static long byteArrayToLong(byte[] b, int offset, int length) {

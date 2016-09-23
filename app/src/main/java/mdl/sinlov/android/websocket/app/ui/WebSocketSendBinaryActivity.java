@@ -78,6 +78,11 @@ public class WebSocketSendBinaryActivity extends MDLTestActivity {
             }
 
             @Override
+            public boolean onHeartbeat(String ping, String pong, Exception error) {
+                return false;
+            }
+
+            @Override
             public void onDisconnect(int code, String reason, Exception error) {
                 ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
                 tvWsSendBinaryRes.setText(ALogPrinter.getLogMessage());
