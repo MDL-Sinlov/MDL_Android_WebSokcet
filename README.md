@@ -149,10 +149,10 @@ Runtime info
 
 
 Project Runtime:
-- Android Studio 2.1.3
+- Android Studio 2.2
 - appcompat-v7:23.4.0
-- Gradle 2.10
-- com.android.tools.build:gradle:2.1.3
+- Gradle 2.14.2
+- com.android.tools.build:gradle:2.2.0
 
 This Demo use gradle res build so
 
