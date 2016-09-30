@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * engine of WebSokcet
+ * engine of WebSocket
  * <pre>
  *     sinlov
  *

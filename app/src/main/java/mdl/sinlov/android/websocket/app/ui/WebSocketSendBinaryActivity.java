@@ -20,6 +20,7 @@ import mdl.sinlov.android.log.ALogPrinter;
 import mdl.sinlov.android.websocket.app.R;
 import mdl.sinlov.android.websocket.app.utils.HexUtils;
 import mdl.sinlov.android.websocket.app.utils.ResourceUtil;
+import mdl.sinlov.android.websokcet.ProtocolError;
 import mdl.sinlov.android.websokcet.WebSocketEngine;
 import mdl.sinlov.android.websokcet.WebSocketListener;
 
@@ -78,12 +79,12 @@ public class WebSocketSendBinaryActivity extends MDLTestActivity {
             }
 
             @Override
-            public boolean onHeartbeat(String ping, String pong, Exception error) {
+            public boolean onHeartbeat(String ping, String pong, ProtocolError error) {
                 return false;
             }
 
             @Override
-            public void onDisconnect(int code, String reason, Exception error) {
+            public void onDisconnect(int code, String reason, ProtocolError error) {
                 ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
                 tvWsSendBinaryRes.setText(ALogPrinter.getLogMessage());
             }

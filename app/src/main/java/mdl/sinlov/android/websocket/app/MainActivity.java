@@ -17,6 +17,7 @@ import mdl.sinlov.android.websocket.app.ui.WebSocketSendBinaryActivity;
 import mdl.sinlov.android.websocket.app.ui.WebSocketSendStringActivity;
 import mdl.sinlov.android.websocket.app.utils.ResourceUtil;
 import mdl.sinlov.android.websokcet.MessageUtils;
+import mdl.sinlov.android.websokcet.ProtocolError;
 import mdl.sinlov.android.websokcet.WebSocketEngine;
 import mdl.sinlov.android.websokcet.WebSocketListener;
 
@@ -145,7 +146,7 @@ public class MainActivity extends MDLTestActivity {
         }
 
         @Override
-        public boolean onHeartbeat(String ping, String pong, Exception error) {
+        public boolean onHeartbeat(String ping, String pong, ProtocolError error) {
             ALog.d("message ping: " + ping + "\n" +
                     "message pong: " + pong + "\n"
             );
@@ -155,7 +156,7 @@ public class MainActivity extends MDLTestActivity {
 
 
         @Override
-        public void onDisconnect(int code, String reason, Exception error) {
+        public void onDisconnect(int code, String reason, ProtocolError error) {
             ALog.d("onDisconnect" + "server: " + wsHost + " is disconnect!");
             tvMainResult.setText(ALogPrinter.getLogMessage());
         }
